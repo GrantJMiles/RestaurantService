@@ -1,0 +1,98 @@
+using RestaurantService;
+using Spectre.Console;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+
+var restaurantName = args.Length > 0 ? args[0] : "Default Restaurant";
+var restaurantTimesAndTables = new List<RestaurantTimeSlot>()
+{
+    new("11:00", GetTables()),new("12:00", GetTables()),new("13:00", GetTables()),new("14:00", GetTables())
+};
+
+OutputService.WriteText($"Hello and Welcome to ", false);
+OutputService.WriteText(restaurantName, ConsoleColor.Blue);
+OutputService.WriteText("Using this service you can Book, See all current bookings and cancel existing bookings");
+OutputService.WriteText("At any time if you feel stuck type help to see a list of available commands");
+OutputService.WriteText("If you start a command and want to return, type exit and you will return to the main menu", ConsoleColor.Yellow);
+
+var command = AnsiConsole.Prompt(
+    new SelectionPrompt<RestaurantCommand>()
+        .Title("What would you like to do?")
+        .PageSize(10)
+        .MoreChoicesText("[grey](Move up and down to select options)[/]")
+        .UseConverter(s => s.Name)
+        .AddChoices([
+            new RestaurantCommand(1,"Make a booking"),
+            new RestaurantCommand(2, "Show All Bookings"),
+            new RestaurantCommand(3,"Cancel Booking"),
+            new RestaurantCommand(4, "Exit")
+        ]));
+
+switch (command.Id)
+{
+    case 1:
+        MakeBooking();
+    break;
+    case 2:
+        ShowBookings();
+    break;
+    case 3:
+        throw new NotImplementedException();
+    case 4:
+        OutputService.WriteText("Thank you for using ", false);
+        OutputService.WriteText(restaurantName, ConsoleColor.Blue, false);
+        OutputService.WriteText(". Please leave a review");
+        return;
+    default:
+        throw new NotImplementedException("You have requested an action that is not yet available. Contact your administrator.");
+}
+
+void MakeBooking()
+{
+    var time = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+            .Title("When are you looking to book?")
+            .PageSize(10)
+            .MoreChoicesText("[grey](Move up and down to select options)[/]")
+            .AddChoices(restaurantTimesAndTables.Select(s => s.Time)));
+    var tables = restaurantTimesAndTables.First(f => f.Time == time).Tables.Where(w => string.IsNullOrEmpty(w.NameBookedUnder));
+    var table = AnsiConsole.Prompt(
+        new SelectionPrompt<Table>()
+            .Title("Which table would you prefer?")
+            .PageSize(10)
+            .MoreChoicesText("[grey](Move up and down to select options)[/]")
+            .UseConverter(s => $"Table Number {s.TableNumber}, suitable for a {s.Covers} or less")
+            .AddChoices(tables));
+    var name = AnsiConsole.Ask<string>("What's your [green]name[/]?");
+    table.NameBookedUnder = name;
+    ShowBookings();
+}
+void ShowBookings()
+{
+    foreach(var time in restaurantTimesAndTables ?? Enumerable.Empty<RestaurantTimeSlot>())
+    {
+        var bookedTables = time.Tables.Where(w => !string.IsNullOrWhiteSpace(w.NameBookedUnder)).ToList();
+        OutputService.WriteText("----------------------------------", ConsoleColor.Yellow);
+        if (bookedTables.Count > 0)
+        {
+
+            OutputService.WriteText($"There are the following bookings at {time.Time}", ConsoleColor.Yellow);
+            var groupedTables = bookedTables.GroupBy(g => g.Covers);
+            foreach(var coverGroup in groupedTables)
+            {
+                OutputService.WriteText($"There are {coverGroup.Count()} x {coverGroup.Key} covers");
+                foreach(var cover in coverGroup)
+                {
+                    OutputService.WriteText($"Table is booked under the name {cover.NameBookedUnder}");
+                }
+            }
+        }
+        else
+        {
+            OutputService.WriteText($"There are no bookings at {time.Time}", ConsoleColor.Yellow);
+        }
+    }
+}
+static ImmutableList<Table> GetTables() => ImmutableList.Create<Table>(
+    new(1,2), new(2,2), new(3,4), new(4,4), new(5,8)
+);

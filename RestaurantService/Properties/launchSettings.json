@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RestaurantService": {
+      "commandName": "Project",
+      "commandLineArgs": "\"Grants Burgers\""
+    }
+  }
+}
