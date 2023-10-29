@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace RestaurantService
 {
-    internal static class OutputService
+    internal class ConsoleOutputService : IOutputService
     {
-        public static void WriteText(string message, ConsoleColor colour, bool writeLine = true)
+        public void WriteText(string message, ConsoleColor colour, bool writeLine = true)
         {
             Console.ForegroundColor = colour;
             WriteText(message, writeLine);
             Console.ResetColor();
         }
-        public static void WriteText(string message, bool writeLine = true)
+        public void WriteText(string message, bool writeLine = true)
         {
             if (writeLine) Console.WriteLine(message);
             else Console.Write(message);
         }
-        public static void PrintSeperator()
+        public void PrintSeperator()
         {
             Console.WriteLine("---------------------------------------------------");
         }

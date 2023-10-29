@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace RestaurantService
 {
-    internal class WelcomeService(string restaurantName) : IWelcomeService
+    internal class WelcomeService(string restaurantName, IOutputService _outputService, IMessagePromptService _messagePromptService) : IWelcomeService
     {
         private bool _firstRun = true;
   
 
         public void ShowWelcomeMessage(bool showAll = false)
         {
-            OutputService.PrintSeperator();
-            OutputService.WriteText($"Hello and Welcome to ", false);
-            OutputService.WriteText(restaurantName, ConsoleColor.Blue);
+            _outputService.PrintSeperator();
+            _outputService.WriteText(_messagePromptService.WelcomeMessage(restaurantName));
             if (_firstRun || showAll)
             {
                 _firstRun = false;
-                OutputService.WriteText("Using this service you can Book, See all current bookings and cancel existing bookings");
-                OutputService.WriteText("At any time if you feel stuck type help to see a list of available commands");
-                OutputService.WriteText("If you start a command and want to return, type exit and you will return to the main menu", ConsoleColor.Yellow);
+                foreach (var line in _messagePromptService.ExtendedWelcome ?? Enumerable.Empty<string>())
+                {
+                    _outputService.WriteText(line);
+                }
             }
         }
     }

@@ -1,0 +1,27 @@
+{
+  "restaurantName": "Grants Burgers",
+  "welcomeMessage": "Hello and Welcome to [blue]{0}[/]",
+  "extendedWelcome": [
+    "Using this service you can [blue]Book[/], See all [yellow]current bookings[/] and [red]cancel existing bookings[/]",
+    "[yellow]At any time if you feel stuck type help to see a list of available commands[/]",
+    "If you start a command and want to return, type exit and you will return to the main menu"
+  ],
+  "promptRestaurantCommand": "What would you like to do?",
+  "promptUserToContinue": "Would you like to perform another action?",
+  "goodbyeMessage": "Thank you for using {0}",
+  "extendedGoodbye": [
+    "Please leave a review."
+  ],
+  "cancelPromptUserForName": "What name is the booking under?",
+  "cancelPromptUserForTable": "Which table do you want to cancel?",
+  "cancelPromptToConfirm": "Are you sure you want to cancel a booking for {0}",
+  "bookingPromptForTime": "When are you looking to book?",
+  "bookingPromptForTable": "Which table would you prefer",
+  "bookingPromptForTableDisplay": "Table Number {0}, suitable for a {1} or less",
+  "bookingPromptForName": "What's your [green]name[/]?",
+  "bookingPromptToConfirm": "You have a booking for [yellow]{0}[/] on table number [yellow]{1}[/] at [yellow]{2}[/] under the name of [yellow]{3}[/].\nDo you want to continue?",
+  "showBookingForTimeSlotMessage": "There are the following bookings at {0}",
+  "showBookingNoBookingsForTimeSlot": "There are no bookings at {0}",
+  "showBookingNumberOfCoversMessage": "There are {0} x {1} covers",
+  "showBookingBookedTableMessage": "Table is booked under the name {0}"
+}

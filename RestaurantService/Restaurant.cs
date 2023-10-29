@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace RestaurantService
 {
-    internal class Restaurant(string name, 
-                            IWelcomeService welcomeService, 
-                            IBookingService bookingService, 
-                            IUserPromptService userPromptService)
+    internal class Restaurant(string _name, 
+                            IWelcomeService _welcomeService, 
+                            IBookingService _bookingService, 
+                            IUserPromptService _userPromptService,
+                            IOutputService _outputService,
+                            IMessagePromptService _messagePromptService)
     {
-        private readonly string _name = name;
-        private readonly IWelcomeService _welcomeService = welcomeService;
-        private readonly IBookingService _bookingService =  bookingService;
-        private readonly IUserPromptService _userPromptService = userPromptService;
 
         private static readonly IEnumerable<RestaurantCommand> RestaurantCommands = [
             new RestaurantCommand(1, "Make a booking"),
@@ -33,13 +31,13 @@ namespace RestaurantService
                 Console.Clear();
                 _welcomeService.ShowWelcomeMessage();
                 var requestedService = _userPromptService.GetUserSelectionResponse(
-                    prompt: "What would you like to do?",
+                    prompt: _messagePromptService.PromptRestaurantCommand,
                     selectionOptions: RestaurantCommands,
                     propertySelector: p => p.Name);
                 ProcessRestaurantCommand(requestedService);
                 if (_keepRunning)
                 {
-                    var userToContinue = _userPromptService.PromptUserForYesNo("Would you like to perform another action?");
+                    var userToContinue = _userPromptService.PromptUserForYesNo(_messagePromptService.PromptUserToContinue);
                     if (!userToContinue) _keepRunning = false;
                 }
             }
@@ -59,9 +57,11 @@ namespace RestaurantService
                     _bookingService.CancelBooking();
                 break;
                 case 4:
-                    OutputService.WriteText("Thank you for using ", false);
-                    OutputService.WriteText(_name, ConsoleColor.Blue, false);
-                    OutputService.WriteText(". Please leave a review");
+                    _outputService.WriteText(_messagePromptService.GoodbyeMessage(_name));
+                    foreach(var line in _messagePromptService.ExtendedGoodbye ?? Enumerable.Empty<string>())
+                    {
+                        _outputService.WriteText(line);
+                    }
                     _keepRunning = false;
                 break;
                 default:

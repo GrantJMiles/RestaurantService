@@ -9,11 +9,11 @@ var restaurantTimesAndTables = new List<RestaurantTimeSlot>()
     new("11:00", GetTables()),new("12:00", GetTables()),new("13:00", GetTables()),new("14:00", GetTables())
 };
 
-OutputService.WriteText($"Hello and Welcome to ", false);
-OutputService.WriteText(restaurantName, ConsoleColor.Blue);
-OutputService.WriteText("Using this service you can Book, See all current bookings and cancel existing bookings");
-OutputService.WriteText("At any time if you feel stuck type help to see a list of available commands");
-OutputService.WriteText("If you start a command and want to return, type exit and you will return to the main menu", ConsoleColor.Yellow);
+_outputService.WriteText($"Hello and Welcome to ", false);
+_outputService.WriteText(restaurantName, ConsoleColor.Blue);
+_outputService.WriteText("Using this service you can Book, See all current bookings and cancel existing bookings");
+_outputService.WriteText("At any time if you feel stuck type help to see a list of available commands");
+_outputService.WriteText("If you start a command and want to return, type exit and you will return to the main menu", ConsoleColor.Yellow);
 
 var command = AnsiConsole.Prompt(
     new SelectionPrompt<RestaurantCommand>()
@@ -39,9 +39,9 @@ switch (command.Id)
     case 3:
         throw new NotImplementedException();
     case 4:
-        OutputService.WriteText("Thank you for using ", false);
-        OutputService.WriteText(restaurantName, ConsoleColor.Blue, false);
-        OutputService.WriteText(". Please leave a review");
+        _outputService.WriteText("Thank you for using ", false);
+        _outputService.WriteText(restaurantName, ConsoleColor.Blue, false);
+        _outputService.WriteText(". Please leave a review");
         return;
     default:
         throw new NotImplementedException("You have requested an action that is not yet available. Contact your administrator.");
@@ -72,24 +72,24 @@ void ShowBookings()
     foreach(var time in restaurantTimesAndTables ?? Enumerable.Empty<RestaurantTimeSlot>())
     {
         var bookedTables = time.Tables.Where(w => !string.IsNullOrWhiteSpace(w.NameBookedUnder)).ToList();
-        OutputService.WriteText("----------------------------------", ConsoleColor.Yellow);
+        _outputService.WriteText("----------------------------------", ConsoleColor.Yellow);
         if (bookedTables.Count > 0)
         {
 
-            OutputService.WriteText($"There are the following bookings at {time.Time}", ConsoleColor.Yellow);
+            _outputService.WriteText($"There are the following bookings at {time.Time}", ConsoleColor.Yellow);
             var groupedTables = bookedTables.GroupBy(g => g.Covers);
             foreach(var coverGroup in groupedTables)
             {
-                OutputService.WriteText($"There are {coverGroup.Count()} x {coverGroup.Key} covers");
+                _outputService.WriteText($"There are {coverGroup.Count()} x {coverGroup.Key} covers");
                 foreach(var cover in coverGroup)
                 {
-                    OutputService.WriteText($"Table is booked under the name {cover.NameBookedUnder}");
+                    _outputService.WriteText($"Table is booked under the name {cover.NameBookedUnder}");
                 }
             }
         }
         else
         {
-            OutputService.WriteText($"There are no bookings at {time.Time}", ConsoleColor.Yellow);
+            _outputService.WriteText($"There are no bookings at {time.Time}", ConsoleColor.Yellow);
         }
     }
 }

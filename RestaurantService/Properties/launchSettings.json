@@ -3,6 +3,9 @@
     "RestaurantService": {
       "commandName": "Project",
       "commandLineArgs": "\"Grants Burgers\""
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }
